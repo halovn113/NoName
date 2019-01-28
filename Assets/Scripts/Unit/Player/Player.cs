@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : UnitHumanroid
+public class Player : UnitHumanroid 
 {
     private PlayerControl _playerControl;
     private PlayerStats _stats;
@@ -25,7 +25,7 @@ public class Player : UnitHumanroid
     void Start()
     {
         _playerControl = gameObject.GetComponent<PlayerControl>();
-        _stats = gameObject.GetComponent<PlayerStats>();
+        //_stats = gameObject.GetComponent<PlayerStats>();
         _playerControl.Init();
     }
 
@@ -39,4 +39,10 @@ public class Player : UnitHumanroid
         base.HealthApply(number);
         //GameDirector.instance.UIDirector.uiPlayer.Health.UpdateBarFixed(health);
     }
+
+    public void Dash()
+    {
+
+    }
+
 }

@@ -8,6 +8,7 @@ public class AttackObject : MonoBehaviour
     public bool autoDestroy;
     public string dontDestroyWhenMeet;
     public string effectTagName;
+    public float damage;
 
     void Start()
     {

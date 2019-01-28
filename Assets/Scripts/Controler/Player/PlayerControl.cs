@@ -20,7 +20,10 @@ public class PlayerControl : MonoBehaviour
     public KeyBinding keys;
 
     // test fields
-    public OnAttack onAttack;
+    public OnPlayerAttack onAttack;
+    public bool melee;
+
+    public Vector3 attackDirection;
 
     private Vector3 mousePos;
     private OnUnitLook onUnitLook;
@@ -33,13 +36,15 @@ public class PlayerControl : MonoBehaviour
 
     private float normalSpeed;
     private float currentSpeed;
+    private float _mouseAngle;
+
 
     public void Init()
     {
         keys = GetComponent<KeyBinding>();
         keys.Init();
         moveVector = new Vector3(0, 0, 0);
-        normalSpeed = gameObject.GetComponent<PlayerStats>().moveSpeed;
+        //normalSpeed = gameObject.GetComponent<PlayerStats>().moveSpeed;
         currentSpeed = normalSpeed;
         onUnitLook = gameObject.GetComponent<OnUnitLook>();
         onUnitLook.SetTarget(mousePos);
@@ -99,37 +104,25 @@ public class PlayerControl : MonoBehaviour
 
         if (Input.GetKey(keys.GetKey("Attack1")) && onAttack.GetAttackState() == AttackState.Nope)
         {
-            onAttack.SetAttackState(AttackState.Attacking);
+            if (melee)
+            {
+                onAttack.AttackMelee(attackDirection);
+            }
+            //onAttack.SetAttackState(AttackState.Attacking);
+
         }
     }
 
     void Move()
     {
-        transform.position += moveVector.normalized * currentSpeed * Time.deltaTime;
+        //transform.position += moveVector.normalized * currentSpeed * Time.deltaTime;
+        gameObject.GetComponent<Player>().Move(moveVector);
 
         switch (dashCon)
         {
             case Dash.Dashing:
-                //if (moveVector.y != 0)
-                //{
-                //    transform.position += moveVector.normalized * currentSpeed * 2 * Time.deltaTime;
-                //}
-                //else
-                //{
-                //    //if (condition_facingRight)
-                //    //{
-                //    //    transform.position += new Vector3(1, 0, 0) * currentSpeed * 3 * Time.deltaTime;
-                //    //}
-                //    //else
-                //    //{
-                //    //    transform.position += new Vector3(-1, 0, 0) * currentSpeed * 3 * Time.deltaTime;
-                //    //}
-
-                //    transform.position += new Vector3(1, 0, 0) * currentSpeed * 3 * Time.deltaTime;
-
-                //}
-
-                transform.position += moveVector.normalized * currentSpeed * 3 * Time.deltaTime;
+                //transform.position += moveVector.normalized * currentSpeed * 3 * Time.deltaTime;
+                //gameObject.GetComponent<Rigidbody2D>().velocity += moveVector.normalized * 100 * currentSpeed * Time.deltaTime;
 
                 break;
 
@@ -138,7 +131,6 @@ public class PlayerControl : MonoBehaviour
                 {
                     _afterDash = 0;
                     dashCon = Dash.Nope;
-
                 }
                 else
                 {
@@ -179,6 +171,28 @@ public class PlayerControl : MonoBehaviour
             {
                 _facingRight = false;
             }
+        }
+
+        _mouseAngle = Utilities.GetAngleBetween(gameObject, mousePos);
+        if (_mouseAngle >= 315 || _mouseAngle <= 45) // right
+        {
+            //Debug.Log("right");
+            gameObject.GetComponent<Player>().ChangeLookDirection(Unit.DIRECTION.RIGHT);
+        }
+        else if (_mouseAngle > 45 && _mouseAngle <= 135) // up
+        {
+            //Debug.Log("up");
+            gameObject.GetComponent<Player>().ChangeLookDirection(Unit.DIRECTION.UP);
+        }
+        else if (_mouseAngle > 135 && _mouseAngle <= 225) // left
+        {
+            //Debug.Log("Left");
+            gameObject.GetComponent<Player>().ChangeLookDirection(Unit.DIRECTION.LEFT);
+        }
+        else if (_mouseAngle > 225 && _mouseAngle < 315) // down
+        {
+            //Debug.Log("down");
+            gameObject.GetComponent<Player>().ChangeLookDirection(Unit.DIRECTION.DOWN);
         }
     }
 

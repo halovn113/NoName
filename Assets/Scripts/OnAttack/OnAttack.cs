@@ -25,6 +25,9 @@ public class OnAttack : MonoBehaviour
     public Collider2D attackTrigger; // test collider
     public GameObject weapon; // test melee trước
     private AttackState attackState;
+
+    public Bullet bullet;
+    public Melee melee;
     
     public AttackType attackType;
     public float timeAttack = 0.5f; // 0.5 chỉ để test
@@ -44,8 +47,8 @@ public class OnAttack : MonoBehaviour
         //attackTrigger = GetComponent<Collider2D>();
         attackTimer = 0;
         afterATimer = 0;
-        weapon.SetActive(false);
-        attackTrigger.enabled = false;
+        //weapon.SetActive(false);
+        //attackTrigger.enabled = false;
         aimingPos = new Vector3(0, 0, 0);
         //objPooler = ObjectPooler.Instance;
     }
@@ -59,7 +62,6 @@ public class OnAttack : MonoBehaviour
     public void SetAttackState(AttackState state)
     {
         attackState = state;
-        SetAttack();
         aimingPos = weapon.transform.position;
     }
 
@@ -159,25 +161,22 @@ public class OnAttack : MonoBehaviour
         attackTrigger.enabled = false;
     }
 
-    public void SetAttack()
+    public virtual void AttackMelee(Vector3 position)
     {
-        switch (attackType)
-        {
-            case AttackType.Slash:
-                weapon.SetActive(true);
-                break;
-            case AttackType.Thrust:
-                break;
-            case AttackType.Shoot:
-                screenPoint = Camera.main.WorldToScreenPoint(transform.position);
-                direction = (Input.mousePosition - screenPoint).normalized;
-                //GameObject bullet = objPooler.SpawnFromPool("test", weapon.transform.position, Quaternion.identity); // test
-                //bullet.transform.rotation = Quaternion.LookRotation(Vector3.forward, weapon.transform.position - Camera.main.ScreenToWorldPoint(Input.mousePosition));
-                //bullet.GetComponent<Bullet>().Shoot(direction);
-                break;
+        Melee _melee = Instantiate(melee);
+        _melee.transform.position = position;
+    }
 
-            case AttackType.Cast:
-                break;
+    public virtual void AttackRange(Vector3 direction, string dontDestroyWhenMeet = "", string effectWhenMeet = "", Vector3 target = default(Vector3), Vector3 weaponPosition = default(Vector3))
+    {
+        Vector3 startPos = weaponPosition == default(Vector3) ? transform.position : weaponPosition; 
+        Bullet _bullet = Instantiate(bullet);
+        bullet.transform.position = startPos;
+        if (target != default(Vector3))
+        {
+            bullet.transform.rotation = Quaternion.LookRotation(Vector3.forward, startPos - target);
         }
+        bullet.Shoot(direction);
+
     }
 }

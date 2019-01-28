@@ -10,13 +10,12 @@ public class Unit : MonoBehaviour
     public UnitState unitState;
     public float moveSpeed;
 
-    //public UnitType type;
-    //UnitState state;
+    private Vector3 _moveVector;
+    private Vector3 _endPos;
+    private Vector3 _startPos;
 
-    //public UnitState GetState()
-    //{
-    //    return state;
-    //}
+    private float lerpTime = 1f;
+    private float currentLerpTime;
 
     public virtual void HealthApply(float number)
     {
@@ -44,6 +43,39 @@ public class Unit : MonoBehaviour
     public UnitState GetUnitState()
     {
         return unitState;
+    }
+
+    void _unitMove()
+    {
+        //_startPos = transform.position;
+        //_endPos = transform.position + _moveVector.normalized * moveSpeed;
+        //if (currentLerpTime > lerpTime)
+        //{
+        //    currentLerpTime = lerpTime;
+        //}
+        //float perc = currentLerpTime / lerpTime;
+        transform.position += _moveVector.normalized * moveSpeed * Time.deltaTime;
+        //transform.position = Vector3.Lerp(_startPos, _endPos, perc);
+        //Debug.Log("moving");
+    }
+
+    public void Move(Vector3 moveVector)
+    {
+        _moveVector = moveVector;
+    }
+
+    void Update()
+    {
+        _unitMove();
+    }
+
+    public static class DIRECTION
+    {
+        public static string LEFT = "DIRECTION.LEFT";
+        public static string RIGHT = "DIRECTION.RIGHT";
+        public static string UP = "DIRECTION.UP";
+        public static string DOWN = "DIRECTION.DOWN";
+
     }
 }
 

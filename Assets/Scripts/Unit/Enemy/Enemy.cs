@@ -5,7 +5,6 @@ using UnityEngine;
 public class Enemy : Unit
 {
     public float attackDistance;
-    public float moveSpeed;
     public float sightRange;
     public float nextAttack;
 
